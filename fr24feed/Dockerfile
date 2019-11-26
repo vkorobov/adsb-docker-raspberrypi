@@ -1,22 +1,16 @@
-FROM alpine:latest
+FROM raspbian/stretch
 
-RUN apk update && \
-	apk add wget tar
+RUN apt-get update && apt-get install -y dirmngr supervisor gettext-base
 
-RUN wget https://repo-feed.flightradar24.com/linux_x86_64_binaries/fr24feed_1.0.18-5_amd64.tgz && \
-	tar xvfz fr24feed_1.0.18-5_amd64.tgz
+RUN apt-key adv --recv-keys --keyserver pool.sks-keyservers.net --recv-keys 40C430F5 \
+     && echo "deb http://repo.feed.flightradar24.com flightradar24 raspberrypi-stable" > /etc/apt/sources.list.d/fr24feed.list
 
-FROM debian:stretch
+RUN apt-get update && apt-get install -y fr24feed
 
-ENV RECEIVER_HOST dump1090-fa
-ENV RECEIVER_PORT 30005
+EXPOSE 8754
 
-RUN apt-get update && \
-	apt-get install -y supervisor gettext-base
-
-COPY --from=0 fr24feed_amd64/fr24feed /
 COPY start.sh /
-RUN chmod +x /fr24feed /start.sh
+RUN chmod +x /start.sh
 
 COPY supervisor /etc/supervisor
 COPY fr24feed.ini.tpl /etc

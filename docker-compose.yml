@@ -1,4 +1,4 @@
-version: '3'
+version: '3.7'
 services:
   dump1090-fa:
     build: ./dump1090-fa
@@ -14,18 +14,32 @@ services:
       - "30104"
       - "8080"
     ports:
-      - "8082:8080"
+      - "8080:8080"
     environment:
-      - LAT=
-      - LON=
+      - LAT=${LAT}
+      - LON=${LON}
   piaware:
     build: ./piaware
     image: piaware
+#    network_mode: "host" 
     environment:
-      - FLIGHTAWARE_USER=
-      - FLIGHTAWARE_PASSWORD=
+      - FLIGHTAWARE_USER=${FLIGHTAWARE_USER}
+      - FLIGHTAWARE_PASSWORD=${FLIGHTAWARE_PASSWORD}
+      - FLIGHTAWARE_FEEDER_ID=${FLIGHTAWARE_FEEDER_ID}
+#      - FLIGHTAWARE_FEEDER_ID=b8f4ecf9-9f50-4057-b708-3a5eb297147f
+      - RECEIVER_HOST=${RECEIVER_HOST}
+      - RECEIVER_PORT=${RECEIVER_PORT}
+      - RECEIVER_MLAT_PORT=${RECEIVER_MLAT_PORT}
+    depends_on:
+      - dump1090-fa
   fr24feed:
     build: ./fr24feed
-    image: fr24feed
+    image: fr24feed1
     environment:
-      - FR24_KEY=
+      - RECEIVER_HOST=${RECEIVER_HOST}
+      - RECEIVER_PORT=${RECEIVER_PORT}
+      - FR24_KEY=${FR24_KEY}
+    ports:
+      - "8754:8754"
+    depends_on:
+      - dump1090-fa

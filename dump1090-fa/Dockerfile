@@ -1,32 +1,35 @@
-FROM debian:jessie
+FROM raspbian/stretch AS builder
 
-RUN apt-get update && \
-	apt-get install -y librtlsdr-dev fakeroot dpkg-dev git debhelper libusb-1.0-0-dev pkg-config dh-systemd libncurses5-dev libusb-1.0-0 build-essential cmake libtecla1 libtecla-dev wget doxygen help2man pandoc
+ENTRYPOINT []
 
-RUN git clone --recursive https://github.com/Nuand/bladeRF.git
-WORKDIR bladeRF
-RUN git checkout tags/2016.06
-RUN dpkg-buildpackage -b
+WORKDIR /root
 
-WORKDIR /
-RUN dpkg -i libbladerf1_2016.06_amd64.deb libbladerf-dev_2016.06_amd64.deb
+RUN apt-get update -qy \
+   && apt-get install --no-install-recommends -qy \
+   git-core git build-essential debhelper librtlsdr-dev pkg-config dh-systemd libncurses5-dev libbladerf-dev
 
-RUN git clone https://github.com/flightaware/dump1090.git
+RUN git clone https://github.com/flightaware/dump1090
+
 WORKDIR dump1090
+
 RUN dpkg-buildpackage -b
 
-FROM debian:jessie
-COPY --from=0 libbladerf1_2016.06_amd64.deb .
-COPY --from=0 dump1090-fa_3.6.3_amd64.deb .
+FROM raspbian/stretch
 
 RUN apt-get update && \
-	apt-get install -y librtlsdr0 libusb-1.0-0 init-system-helpers lighttpd supervisor
-RUN dpkg -i libbladerf1_2016.06_amd64.deb dump1090-fa_3.6.3_amd64.deb
-RUN mkdir -p /run/dump1090-fa
+        apt-get install -y init-system-helpers lighttpd supervisor
+
+COPY --from=builder /root/dump1090-fa_3.7.2_armhf.deb .
+
+RUN apt-get update && \
+	apt-get install -y librtlsdr0 libbladerf1 libusb-1.0-0 init-system-helpers lighttpd supervisor && \
+	mkdir -p /run/dump1090-fa
+
+RUN dpkg -i  dump1090-fa_3.7.2_armhf.deb
 
 ADD supervisor /etc/supervisor
 
-EXPOSE 30001 30002 30003 30004 30005 30104 8080
+EXPOSE 30001-30005 30104 8080
 
 ENTRYPOINT ["supervisord"]
 CMD ["-c", "/etc/supervisor/supervisord.conf"]

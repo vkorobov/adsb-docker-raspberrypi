@@ -5,19 +5,20 @@ services:
     image: dump1090-fa
     devices:
       - "/dev/bus/usb"
-    expose:
-      - "30001"
-      - "30002"
-      - "30003"
-      - "30004"
-      - "30005"
-      - "30104"
-      - "8080"
+#    expose:
+#      - "30001"
+#      - "30002"
+#      - "30003"
+#      - "30004"
+#      - "30005"
+#      - "30104"
+#      - "8080"
     ports:
       - "8080:8080"
     environment:
       - LAT=${LAT}
       - LON=${LON}
+    restart: always
   piaware:
     build: ./piaware
     image: piaware
@@ -26,12 +27,12 @@ services:
       - FLIGHTAWARE_USER=${FLIGHTAWARE_USER}
       - FLIGHTAWARE_PASSWORD=${FLIGHTAWARE_PASSWORD}
       - FLIGHTAWARE_FEEDER_ID=${FLIGHTAWARE_FEEDER_ID}
-#      - FLIGHTAWARE_FEEDER_ID=b8f4ecf9-9f50-4057-b708-3a5eb297147f
       - RECEIVER_HOST=${RECEIVER_HOST}
       - RECEIVER_PORT=${RECEIVER_PORT}
       - RECEIVER_MLAT_PORT=${RECEIVER_MLAT_PORT}
     depends_on:
       - dump1090-fa
+    restart: always
   fr24feed:
     build: ./fr24feed
     image: fr24feed1
@@ -43,3 +44,4 @@ services:
       - "8754:8754"
     depends_on:
       - dump1090-fa
+    restart: always

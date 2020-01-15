@@ -5,14 +5,6 @@ services:
     image: dump1090-fa:3.8.0
     devices:
       - "/dev/bus/usb"
-#    expose:
-#      - "30001"
-#      - "30002"
-#      - "30003"
-#      - "30004"
-#      - "30005"
-#      - "30104"
-#      - "8080"
     ports:
       - "8080:8080"
     environment:
@@ -21,8 +13,8 @@ services:
     restart: always
   piaware:
     build: ./piaware
-#    image: piaware:3.8.0
-    image: piaware
+    image: piaware:3.8.0
+#    image: piaware
 #    network_mode: "host" 
     environment:
       - FLIGHTAWARE_USER=${FLIGHTAWARE_USER}

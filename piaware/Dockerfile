@@ -26,14 +26,14 @@ RUN dpkg-buildpackage -b
 
 FROM raspbian/stretch
 
-COPY --from=build piaware_builder/piaware_${VERSION}_armhf.deb .
+COPY --from=build piaware_builder/piaware_*_armhf.deb piaware_armhf.deb
 
 RUN apt-get update && \
 	apt-get install -y libexpat1 libreadline7 libssl1.1 libtcl8.6 net-tools tclx8.4 tcl8.6 tcllib tcl-tls itcl3 supervisor \
 	libboost-system-dev libboost-program-options-dev libboost-regex-dev libboost-filesystem-dev \
 	&& rm -rf /var/lib/apt/lists/*
 
-RUN dpkg -i piaware_${VERSION}_armhf.deb
+RUN dpkg -i piaware_armhf.deb
 
 ADD supervisor /etc/supervisor
 WORKDIR /

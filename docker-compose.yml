@@ -2,7 +2,7 @@ version: '3.7'
 services:
   dump1090-fa:
     build: ./dump1090-fa
-    image: dump1090-fa
+    image: dump1090-fa:3.8.0
     devices:
       - "/dev/bus/usb"
 #    expose:
@@ -21,6 +21,7 @@ services:
     restart: always
   piaware:
     build: ./piaware
+#    image: piaware:3.8.0
     image: piaware
 #    network_mode: "host" 
     environment:
@@ -30,12 +31,14 @@ services:
       - RECEIVER_HOST=${RECEIVER_HOST}
       - RECEIVER_PORT=${RECEIVER_PORT}
       - RECEIVER_MLAT_PORT=${RECEIVER_MLAT_PORT}
+    ports:
+      - "8081:8080"
     depends_on:
       - dump1090-fa
     restart: always
   fr24feed:
     build: ./fr24feed
-    image: fr24feed1
+    image: fr24feed:1.0.24-7
     environment:
       - RECEIVER_HOST=${RECEIVER_HOST}
       - RECEIVER_PORT=${RECEIVER_PORT}

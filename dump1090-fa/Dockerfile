@@ -8,6 +8,8 @@ RUN apt-get update -qy \
    && apt-get install --no-install-recommends -qy \
    git-core git build-essential debhelper librtlsdr-dev pkg-config dh-systemd libncurses5-dev libbladerf-dev
 
+ENV VERSION 3.8.0
+
 RUN git clone https://github.com/flightaware/dump1090
 
 WORKDIR dump1090
@@ -16,16 +18,20 @@ RUN dpkg-buildpackage -b
 
 FROM raspbian/stretch
 
+LABEL mantainer="vkorobov"
+LABEL description="dump1090-fa docker"
+LABEL version=${PIAWARE_VERSION}
+
 RUN apt-get update && \
         apt-get install -y init-system-helpers lighttpd supervisor
 
-COPY --from=builder /root/dump1090-fa_3.8.0_armhf.deb .
+COPY --from=builder /root/dump1090-fa_*_armhf.deb dump1090-fa_armhf.deb
 
 RUN apt-get update && \
 	apt-get install -y librtlsdr0 libbladerf1 libusb-1.0-0 init-system-helpers lighttpd supervisor && \
 	mkdir -p /run/dump1090-fa
 
-RUN dpkg -i  dump1090-fa_3.8.0_armhf.deb
+RUN dpkg -i  dump1090-fa_armhf.deb
 
 ADD supervisor /etc/supervisor
 

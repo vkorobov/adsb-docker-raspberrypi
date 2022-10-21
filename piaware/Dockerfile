@@ -1,7 +1,12 @@
-FROM raspbian/stretch AS build
+FROM debian:bullseye AS build
+ARG TARGETPLATFORM
+ARG TARGETARCH 
+ARG TARGETVARIANT 
+ARG BUILDPLATFORM 
+RUN echo "I'm building from $BUILDPLATFORM for $TARGETPLATFORM arch $TARGETARCH variant $TARGETVARIANT"
 
 RUN apt-get update && \
-	apt-get install -y build-essential debhelper tcl8.6-dev autoconf python3-dev python3-venv dh-systemd libz-dev git wget  \
+	apt-get install -y build-essential debhelper tcl8.6-dev autoconf python3-dev python3-venv libz-dev git wget  \
 	libboost-system-dev libboost-program-options-dev libboost-regex-dev libboost-filesystem-dev devscripts apt-utils
 
 LABEL version=3.8.0

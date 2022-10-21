@@ -1,22 +1,22 @@
-FROM raspbian/stretch AS builder
-
+FROM debian:latest AS builder
 ENTRYPOINT []
 
 WORKDIR /root
 
 RUN apt-get update -qy \
    && apt-get install --no-install-recommends -qy \
-   git-core git build-essential debhelper librtlsdr-dev pkg-config dh-systemd libncurses5-dev libbladerf-dev
-
-ENV VERSION 3.8.1
+   git-core git \
+   build-essential fakeroot debhelper librtlsdr-dev pkg-config libncurses5-dev libbladerf-dev libhackrf-dev liblimesuite-dev apt-utils
+ENV VERSION 7.2
 
 RUN git clone https://github.com/flightaware/dump1090
 
 WORKDIR dump1090
+RUN ./prepare-build.sh bullseye && \
+     cd package-bullseye && \    
+     dpkg-buildpackage -b --no-sign --build-profiles=custom,rtlsdr
 
-RUN dpkg-buildpackage -b
-
-FROM raspbian/stretch
+FROM debian:latest
 
 LABEL mantainer="vkorobov"
 LABEL description="dump1090-fa docker"

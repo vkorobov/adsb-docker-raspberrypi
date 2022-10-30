@@ -45,9 +45,10 @@ COPY --from=build piaware_builder/piaware_*.deb /
 COPY --from=build tcltls-rebuild/tcl-tls_*.deb /
 
 RUN apt-get update && \
-	apt-get install -y libexpat1 libtcl net-tools tclx tcl tcllib tcl-tls itcl3 supervisor \
-	libboost-system-dev libboost-program-options-dev libboost-regex-dev libboost-filesystem-dev \
-	&& rm -rf /var/lib/apt/lists/*
+    apt-get install -qy --no-install-recommends \	
+    libexpat1 libtcl net-tools tclx tcl tcllib tcl-tls itcl3 supervisor \
+    libboost-system-dev libboost-program-options-dev libboost-regex-dev libboost-filesystem-dev && \
+    rm -rf /var/lib/apt/lists/*
 
 #RUN ls -l / && erw
 RUN dpkg -i /tcl-tls_*.deb

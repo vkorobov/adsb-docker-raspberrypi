@@ -1,0 +1,44 @@
+version: '3.7'
+services:
+#   dump1090-fa:
+#     build: ./dump1090-fa
+#     image: dump1090-fa:${PIAWARE_VERSION}
+#     devices:
+#       - "/dev/bus/usb"
+#     ports:
+#       - "8080:8080"
+#     environment:
+#       - LAT=${LAT}
+#       - LON=${LON}
+#     restart: always
+  piaware:
+    # build: ./piaware
+    image: vsrv-01.local:5443/vkorobov/piaware:${PIAWARE_VERSION}
+    container_name: piaware
+#    image: piaware
+#    network_mode: "host" 
+    environment:
+      - FLIGHTAWARE_USER=${FLIGHTAWARE_USER}
+      - FLIGHTAWARE_PASSWORD=${FLIGHTAWARE_PASSWORD}
+      - FLIGHTAWARE_FEEDER_ID=${FLIGHTAWARE_FEEDER_ID}
+      - RECEIVER_HOST=${RECEIVER_HOST}
+      - RECEIVER_PORT=${RECEIVER_PORT}
+      - RECEIVER_MLAT_PORT=${RECEIVER_MLAT_PORT}
+    ports:
+      - "8081:8080"
+    # depends_on:
+    #   - dump1090-fa
+    restart: always
+  fr24feed:
+    # build: ./fr24feed
+    image: vsrv-01.local:5443/vkorobov/fr24feed:${FR24_VERSION}
+    container_name: fr24feed
+    environment:
+      - RECEIVER_HOST=${RECEIVER_HOST}
+      - RECEIVER_PORT=${RECEIVER_PORT}
+      - FR24_KEY=${FR24_KEY}
+    ports:
+      - "8754:8754"
+    # depends_on:
+    #   - dump1090-fa
+    restart: always

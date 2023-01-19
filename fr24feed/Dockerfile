@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y dirmngr supervisor gettext-base wget
 # RUN apt-key adv --recv-keys --keyserver pool.sks-keyservers.net --recv-keys 40C430F5 \
 #      && echo "deb http://repo.feed.flightradar24.com flightradar24 raspberrypi-stable" > /etc/apt/sources.list.d/fr24feed.list
 
-ENV FR24FEED_VERSION=1.0.25-3
+ENV FR24FEED_VERSION=1.0.34-0
 # RUN export ARCH=$(dpkg --print-architecture)
 # ENV ARCH=armhf
 LABEL version=${FR24FEED_VERSION}

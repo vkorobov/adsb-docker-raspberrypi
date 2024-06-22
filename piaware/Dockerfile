@@ -1,11 +1,16 @@
-FROM debian:bullseye AS build
+ARG DEBIAN_VERSION=bookworm
+ARG PIAWARE_VERSION=9.0.1
+
+FROM debian:${DEBIAN_VERSION} AS build
 #ARG TARGETPLATFORM
 #ARG TARGETARCH 
 #ARG TARGETVARIANT 
 #ARG BUILDPLATFORM 
 #RUN echo "Building from $BUILDPLATFORM for $TARGETPLATFORM arch $TARGETARCH variant $TARGETVARIANT"
+ARG DEBIAN_VERSION
+ARG PIAWARE_VERSION
 
-ENV DEBIAN_VERSION bullseye
+ENV DEBIAN_VERSION $DEBIAN_VERSION
 #ENV DEBIAN_FRONTEND noninteractive
 #ENV DEBCONF_NOWARNINGS="yes"
 
@@ -15,7 +20,7 @@ RUN apt-get update && \
 	libboost-system-dev libboost-program-options-dev libboost-regex-dev libboost-filesystem-dev devscripts \
         python3-setuptools patchelf libssl-dev tcl-dev chrpath
 
-LABEL version=7.2
+LABEL version=$PIAWARE_VERSION
 
 RUN git clone https://github.com/flightaware/piaware_builder.git
 WORKDIR piaware_builder
@@ -35,7 +40,11 @@ WORKDIR package-${DEBIAN_VERSION}
 RUN dpkg-buildpackage -b --no-sign
 ##    dpkg -i tcl-tls_*.deb 
 
-FROM debian:bullseye
+ARG DEBIAN_VERSION
+
+FROM debian:${DEBIAN_VERSION}
+
+ARG PIAWARE_VERSION
 
 LABEL mantainer="vkorobov"
 LABEL description="piaware docker"

@@ -6,15 +6,15 @@ case $arch in
     dirname=fr24feed_armhf
     ;;
   arm64)
-    url=https://repo-feed.flightradar24.com/rpi_binaries/fr24feed_${FR24FEED_VERSION}_armhf.tgz # force version 1.0.25-3 because of broken version for rpi
-    dirname=fr24feed_armhf
+    url=https://repo-feed.flightradar24.com/rpi_binaries/fr24feed_${FR24FEED_VERSION}_arm64.tgz # force version 1.0.25-3 because of broken version for rpi
+    dirname=fr24feed_arm64
     ;;
   armel)
     url=https://repo-feed.flightradar24.com/rpi_binaries/fr24feed_${FR24FEED_VERSION}_armhf.tgz # force version 1.0.25-3 because of broken version for rpi
     dirname=fr24feed_armhf
     ;;
   amd64)
-    url=https://repo-feed.flightradar24.com/linux_x86_64_binaries/fr24feed_${FR24FEED_VERSION}_amd64.tgz
+    url=https://repo-feed.flightradar24.com/linux_binaries/fr24feed_${FR24FEED_VERSION}_amd64.tgz
     dirname=fr24feed_amd64
     ;;
   *)

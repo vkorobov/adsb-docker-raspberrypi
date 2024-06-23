@@ -1,4 +1,10 @@
-FROM debian:bullseye AS builder
+ARG DEBIAN_VERSION=bookworm
+ARG PIAWARE_VERSION=9.0
+
+FROM debian:${DEBIAN_VERSION} AS builder
+
+ARG DEBIAN_VERSION
+ARG PIAWARE_VERSION
 
 ENTRYPOINT []
 
@@ -11,7 +17,8 @@ RUN apt-get update -qy \
         python3-venv && \
         apt-get clean && \
         rm -rf /var/lib/apt/lists/*
-ENV VERSION 7.2
+
+ENV VERSION=$PIAWARE_VERSION
 
 RUN git clone https://github.com/flightaware/dump1090.git
 
@@ -20,7 +27,8 @@ RUN ./prepare-build.sh bullseye
 WORKDIR /root/dump1090/package-bullseye
 RUN dpkg-buildpackage -b --no-sign --build-profiles=custom,rtlsdr
 
-FROM debian:bullseye AS dump1090-fa
+FROM debian:${DEBIAN_VERSION} AS dump1090-fa
+ARG PIAWARE_VERSION
 
 LABEL mantainer="vkorobov"
 LABEL description="dump1090-fa docker"
